@@ -6,3 +6,6 @@ node_modules/
 
 # ignore package-lock.json
 package-lock.json
+
+# ignore service account key file
+serviceAccountKey.json
