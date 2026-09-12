@@ -1,0 +1,9 @@
+Multi Agent AI
+- chat agent (simple llm response)
+- search agent
+- coding agent
+- pdf agent
+- ppt agent
+- image generation agent
+
+all agent are created in the "agent service"
