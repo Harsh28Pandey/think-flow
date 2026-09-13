@@ -3,7 +3,7 @@ import { auth, googleProvider } from '../utils/firebase'
 import api from '../utils/axios'
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from 'react-redux';
-import { setuserData } from '../redux/userSlice';
+import { setUserdata } from '../redux/userSlice';
 import SideBar from '../components/SideBar';
 import ChatArea from '../components/ChatArea';
 import Artifact from '../components/Artifact';
@@ -16,7 +16,7 @@ const Home = () => {
     const handleLogin = async (token) => {
         try {
             const { data } = await api.post("/api/auth/login", { token })
-            dispatch(setuserData(data))
+            dispatch(setUserdata(data))
         } catch (error) {
             console.log(error)
         }
