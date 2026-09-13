@@ -1,4 +1,4 @@
-import { getModel } from "../config/lllmModels"
+import { getModel } from "../config/llmModels.js"
 
 export const chatAgent = async (state) => {
     const llm = await getModel("router")
