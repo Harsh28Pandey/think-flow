@@ -31,7 +31,7 @@ const Home = () => {
     }
 
     return (
-        <div className='h-screen flex bg-[#101015] text-white overflow-hidden'>
+        <div className='h-screen flex bg-[#101002] text-white overflow-hidden'>
 
             <SideBar />
             <ChatArea />
