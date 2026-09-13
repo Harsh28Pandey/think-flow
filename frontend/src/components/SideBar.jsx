@@ -1,9 +1,11 @@
-import { Coins, LogOut, MessageSquare, PanelLeftIcon, PenIcon, Plus, User } from 'lucide-react'
+import { Coins, LogOut, MessageSquare, PanelLeftIcon, PanelRight, PenIcon, Plus, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { getConversations } from '../features/getConversations'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConversation, setConversations, setSelectedConversation } from '../redux/conversationSlice'
 import { createConversation } from '../features/createConversation'
+import logOut from '../features/logOut'
+import { setUserdata } from '../redux/userSlice'
 
 const SideBar = () => {
 
@@ -20,15 +22,66 @@ const SideBar = () => {
             dispatch(setConversations(data))
         }
         getConv()
-    }, [])
+    }, [userData?._id])
 
     const handleCreateConversation = async () => {
         const data = await createConversation()
         dispatch(addConversation(data))
     }
 
+    if (collapsed) {
+        return (
+            <div className='hidden lg:flex flex-col items-center w-[56px] h-screen bg-[#101002] border-r border-white/[0.06] py-4 gap-1 shrink-0'>
+                <button className='flex items-center justify-center w-9 h-9 rounded-2xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer mb-1'
+                    onClick={() => setCollapsed(false)}
+                >
+                    <PanelRight />
+                </button>
+
+                <button className='flex items-center justify-center w-9 h-9 rounded-2xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer'
+                    onClick={handleCreateConversation}>
+                    <Plus size={17} />
+                </button>
+
+                <div className='flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-5'>
+                    {conversations.map((conv, i) => {
+                        const isActive = selectedConversation?._id == conv?._id
+                        return (
+                            <div
+                                onClick={() => dispatch(setSelectedConversation(conv))}
+                                className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5 rounded-[20px] border transition-colors duration-150 ${isActive ? "bg-blue-700/10 border-blue-700/[0.18]" : "bg-transparent border-transparent"}`}>
+
+                                <div className={`flex items-center justify-center shrink-0 w-[20px] h-[20px] rounded-lg transition-colors duration-150 ${isActive ? "bg-blue-500/15 text-blue-400" : "bg-white/[0.05] text-slate-500"}`}>
+                                    <MessageSquare size={13} />
+                                </div>
+
+                            </div>
+                        )
+                    })}
+                </div>
+
+                <div className='relative shrink-0'>
+                    {
+                        (userData?.avatar && !imageError)
+                            ?
+                            <img
+                                className='w-9 h-9 rounded-[20px] object-cover border-2 border-blue-500/25'
+                                src={userData?.avatar}
+                                alt={"image"}
+                                onError={() => setImageError(true)} />
+                            :
+                            <div className='w-9 h-9 rounded-[20px] bg-white/[0.06] flex items-center justify-center'>
+                                <User size={15} className='text-slate-400' />
+                            </div>
+                    }
+                </div>
+
+            </div>
+        )
+    }
+
     return (
-        <div className='fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#0e0d0d] border-r border-white/[0.06]'>
+        <div className='fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#101002] border-r border-white/[0.06]'>
 
             <div className='flex flex-col h-full'>
                 <div className='flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.06]'>
@@ -90,7 +143,7 @@ const SideBar = () => {
                         <div className='flex items-center gap-2.5 cursor-pointer rounded-2xl px-3 py-2.5 hover:bg-white/[0.05] transition-colors duration-150'>
                             <div className='relative shrink-0'>
                                 {
-                                    (userData?.avatar || !imageError)
+                                    (userData?.avatar && !imageError)
                                         ?
                                         <img
                                             className='w-9 h-9 rounded-[20px] object-cover border-2 border-blue-500/25'
@@ -99,7 +152,7 @@ const SideBar = () => {
                                             onError={() => setImageError(true)} />
                                         :
                                         <div className='w-9 h-9 rounded-[20px] bg-white/[0.06] flex items-center justify-center'>
-                                            <User size={15} className='text-slate400' />
+                                            <User size={15} className='text-slate-400' />
                                         </div>
                                 }
                             </div>
@@ -113,7 +166,12 @@ const SideBar = () => {
                                 <button className='flex items-center justify-center w-7 h-7 rounded-[8px] border-none bg-transparent text-yellow-700 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150'>
                                     <Coins size={18} />
                                 </button>
-                                <button className='flex items-center justify-center w-7 h-7 rounded-[8px] border-none bg-transparent text-red-700 cursor-pointer hover:bg-white/[0.08] hover:text-red-500 transition-all duration-150'>
+                                <button className='flex items-center justify-center w-7 h-7 rounded-[8px] border-none bg-transparent text-red-700 cursor-pointer hover:bg-white/[0.08] hover:text-red-500 transition-all duration-150'
+                                    onClick={() => {
+                                        logOut();
+                                        dispatch(setUserdata(null))
+                                    }}
+                                >
                                     <LogOut size={18} />
                                 </button>
                             </div>
@@ -121,7 +179,7 @@ const SideBar = () => {
                         </div>
                     )
                         :
-                        <button>
+                        <button className='w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-200 bg-white/[0.05] border border-white/[0.08] rounded-2xl py-[11px] cursor-pointer hover:bg-white/[0.08] transition-colors duration-150'>
                             Login
                         </button>
                     }
