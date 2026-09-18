@@ -1,4 +1,4 @@
-
+import Markdown from 'react-markdown'
 
 const MessageBubble = ({ role, content }) => {
 
@@ -12,7 +12,9 @@ const MessageBubble = ({ role, content }) => {
                     : "bg-white/[0.04] border border-white/[0.07] text-slate-200 rounded-tl-sm"
                 }
                 `}>
-                {content}
+                <Markdown>
+                    {content}
+                </Markdown>
             </div>
         </div >
     )
